@@ -1,52 +1,127 @@
-import pandas as pd 
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
 import numpy as np
-uni = pd.read_csv("E:\\Bokey\\Excelr Data\\Python Codes\\all_py\\Clustering\\Universities.csv")
-uni.describe()
-uni.head()
+import matplotlib.pyplot as plt
+import seaborn as sns
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[2]:
+
+
+from sklearn.datasets import load_breast_cancer
+
+
+# In[5]:
+
+
+cancer=load_breast_cancer()
+
+
+# In[6]:
+
+
+cancer.keys()
+
+
+# In[9]:
+
+
+print(cancer['DESCR'])
+
+
+# In[10]:
+
+
+df=pd.DataFrame(cancer['data'],columns=cancer['feature_names'])
+
+
+# In[11]:
+
+
+df.head()
+
+
+# In[12]:
+
+
+from sklearn.preprocessing import StandardScaler
+
+
+# In[13]:
+
+
+scale=StandardScaler()
+
+
+# In[14]:
+
+
+scale.fit(df)
+
+
+# In[17]:
+
+
+scaled_data=scale.transform(df)
+
+
+# In[15]:
+
 
 from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import scale 
-
-# Considering only numerical data 
-uni.data = uni.ix[:,1:]
-uni.data.head(4)
-
-# Normalizing the numerical data 
-uni_normal = scale(uni.data)
-
-pca = PCA(n_components = 6)
-pca_values = pca.fit_transform(uni_normal)
 
 
-# The amount of variance that each PCA explains is 
-var = pca.explained_variance_ratio_
-var
-pca.components_[0]
-
-# Cumulative variance 
-
-var1 = np.cumsum(np.round(var,decimals = 4)*100)
-var1
-
-# Variance plot for PCA components obtained 
-plt.plot(var1,color="red")
-
-# plot between PCA1 and PCA2 
-x = pca_values[:,0]
-y = pca_values[:,1]
-z = pca_values[:2:3]
-plt.scatter(x,y,color=["red","blue"])
-
-from mpl_toolkits.mplot3d import Axes3D
-Axes3D.scatter(np.array(x),np.array(y),np.array(z),c=["green","blue","red"])
+# In[16]:
 
 
-################### Clustering  ##########################
-new_df = pd.DataFrame(pca_values[:,0:4])
+pca=PCA(n_components=2)
 
-from sklearn.cluster import KMeans
 
-kmeans = KMeans(n_clusters = 3)
-kmeans.fit(new_df)
-kmeans.labels_
+# In[18]:
+
+
+pca.fit(scaled_data)
+
+
+# In[20]:
+
+
+x_pca=pca.transform(scaled_data)
+
+
+# In[21]:
+
+
+scaled_data.shape
+
+
+# In[22]:
+
+
+x_pca.shape
+
+
+# In[23]:
+
+
+x_pca
+
+
+# In[24]:
+
+
+plt.figure(figsize=(8,6))
+plt.scatter(x_pca[:,0],x_pca[:,1],c=cancer['target'],cmap='plasma')
+
+
+# In[ ]:
+
+
+
+
